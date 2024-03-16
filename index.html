@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Rock Paper Scissors</title>
+    </head>
+    <body>
+        <script>
+            // Setup choices
+            let choices = ["rock", "paper", "scissors"];
+            // functions
+            function getComputerChoice() {
+                // Generate random number upto 3
+                let randInt = Math.floor(Math.random() * 3);
+                return choices[randInt]
+            }
+            function playRound(playerChoice, computerChoice) {
+                let playerWon = false;
+                console.log("player chose", playerChoice, "computer chose", computerChoice);
+                if ((playerChoice === "rock" && computerChoice === "scissors") || 
+                (playerChoice === "paper" && computerChoice === "rock") || 
+                (playerChoice === "scissors" && computerChoice === "rock")) {
+                    playerWon = true;
+                }
+                // Tie is a user loss to simplify logic
+                return playerWon
+            }
+            function playGame() {
+                console.log("Loading Game....!");
+                let userScore = 0;
+                let machineScore = 0;
+                for (let i=1; i <=5; i++) {
+                    console.log("Fetching User input for round" + " " + i);
+                    let userInput = prompt("Enter your choice from Rock, Paper, Scissors: ", null);
+                    if ((userInput === null) || !(choices.includes(userInput))) {
+                        console.error("Invalid input please enter again. Auto-generating choice")
+                        userInput = getComputerChoice();
+                    }
+                    userInput = (userInput.trim()).toLocaleLowerCase();
+                    // play round
+                    playerResult = playRound(userInput, getComputerChoice()) ? "Won" : "Lost" ;
+                    (playerResult === "Won") ? userScore++ : machineScore++ ;
+                    console.warn("Round-" + i + ": You" + " " + playerResult + ". Game Summary -> You Won: " + userScore + ", Computer Won: " + machineScore);
+                }
+                if (userScore > machineScore) {
+                    console.log("You won the Game");
+                } else {
+                    console.log("Computer won the Game");
+                }
+            }
+            // Run game
+            playGame();
+        </script>
+    </body>
+</html>
