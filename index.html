@@ -1,54 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Rock Paper Scissors</title>
-    </head>
-    <body>
-        <script>
-            // Setup choices
-            let choices = ["rock", "paper", "scissors"];
-            // functions
-            function getComputerChoice() {
-                // Generate random number upto 3
-                let randInt = Math.floor(Math.random() * 3);
-                return choices[randInt]
-            }
-            function playRound(playerChoice, computerChoice) {
-                let playerWon = false;
-                console.log("player chose", playerChoice, "computer chose", computerChoice);
-                if ((playerChoice === "rock" && computerChoice === "scissors") || 
-                (playerChoice === "paper" && computerChoice === "rock") || 
-                (playerChoice === "scissors" && computerChoice === "rock")) {
-                    playerWon = true;
-                }
-                // Tie is a user loss to simplify logic
-                return playerWon
-            }
-            function playGame() {
-                console.log("Loading Game....!");
-                let userScore = 0;
-                let machineScore = 0;
-                for (let i=1; i <=5; i++) {
-                    console.log("Fetching User input for round" + " " + i);
-                    let userInput = prompt("Enter your choice from Rock, Paper, Scissors: ", null);
-                    if ((userInput === null) || !(choices.includes(userInput))) {
-                        console.error("Invalid input please enter again. Auto-generating choice")
-                        userInput = getComputerChoice();
-                    }
-                    userInput = (userInput.trim()).toLocaleLowerCase();
-                    // play round
-                    playerResult = playRound(userInput, getComputerChoice()) ? "Won" : "Lost" ;
-                    (playerResult === "Won") ? userScore++ : machineScore++ ;
-                    console.warn("Round-" + i + ": You" + " " + playerResult + ". Game Summary -> You Won: " + userScore + ", Computer Won: " + machineScore);
-                }
-                if (userScore > machineScore) {
-                    console.log("You won the Game");
-                } else {
-                    console.log("Computer won the Game");
-                }
-            }
-            // Run game
-            playGame();
-        </script>
-    </body>
+  <head>
+    <title>Rock Paper Scissors</title>
+  </head>
+  <body>
+    <h1>Welcome to the Game of Rock Paper Scissors (JSv1)</h1>
+    <h2 class="status">Pick your choice</h2>
+    <script>
+      // Setup choices
+      let choices = ["rock", "paper", "scissors"];
+      const rockButton = document.createElement("button");
+      rockButton.textContent = "Rock";
+      rockButton.setAttribute("choice", "rock");
+      const paperButton = document.createElement("button");
+      paperButton.textContent = "Paper";
+      paperButton.setAttribute("choice", "paper");
+      const scissorsButton = document.createElement("button");
+      scissorsButton.textContent = "Scissors";
+      scissorsButton.setAttribute("choice", "scissors");
+
+      // setup score holders
+      let i = 1;
+      let userScore = 0;
+      let machineScore = 0;
+      let currentScores = document.createElement("h2");
+      currentScores.textContent = "You: " + userScore + " " + "Computer: " + machineScore;
+
+      // functions
+      function getComputerChoice() {
+        // Generate random number upto 3
+        let randInt = Math.floor(Math.random() * 3);
+        return choices[randInt];
+      }
+      let playRound = (event) => {
+        let playerChoice = event.target.getAttribute("choice");
+        let computerChoice = getComputerChoice();
+        let playerWon = false;
+        console.log(
+          "player chose",
+          playerChoice,
+          "computer chose",
+          computerChoice
+        );
+        if (
+          (playerChoice === "rock" && computerChoice === "scissors") ||
+          (playerChoice === "paper" && computerChoice === "rock") ||
+          (playerChoice === "scissors" && computerChoice === "rock")
+        ) {
+          playerWon = true;
+        }
+        // Tie is a user loss to simplify logic
+        playerResult = playerWon ? "Won" : "Lost";
+        playerResult === "Won" ? userScore++ : machineScore++;
+        let para = document.createElement("p");
+        scoreBoard.appendChild(para);
+        console.log(
+          "Round-" +
+            i +
+            ": You" +
+            " " +
+            playerResult +
+            ". Game Summary -> You Won: " +
+            userScore +
+            ", Computer Won: " +
+            machineScore
+        );
+        let roundResult = "Round-" + i + ": You " + playerResult + ". ";
+        roundResult += "You chose: " + playerChoice.toUpperCase() + " & Computer chose: " + computerChoice.toUpperCase();
+        para.textContent = roundResult;
+        para.style.fontSize = "14px";
+        para.style.fontWeight = 600;
+        if (playerWon) para.style.color = "green";
+        else para.style.color = "red";
+        currentScores.textContent = "You: " + userScore + " " + "Computer: " + machineScore;
+        if (userScore >= 5 || machineScore >= 5) {
+          rockButton.removeEventListener("click", playRound);
+          paperButton.removeEventListener("click", playRound);
+          scissorsButton.removeEventListener("click", playRound);
+          let result = document.createElement("h1");
+          scoreBoard.appendChild(result);
+          let announce = document.querySelector(".status");
+          if (userScore > machineScore) {
+            console.log("You won the Game");
+            result.textContent = "You won the Game";
+            announce.textContent = "You won the Game";
+            announce.style.color = "green";
+          } else {
+            console.log("Computer won the Game");
+            result.textContent = "Computer won the Game";
+            announce.textContent = "Computer won the Game";
+            announce.style.color = "red";
+          }
+        }
+        i++;
+      };
+
+      // Create Score board and display choices
+      let scoreBoard = document.createElement("div");
+      scoreBoard.appendChild(rockButton);
+      scoreBoard.appendChild(paperButton);
+      scoreBoard.appendChild(scissorsButton);
+      scoreBoard.appendChild(currentScores);
+      let body = document.querySelector("body");
+      body.appendChild(scoreBoard);
+
+      // Game start
+      console.log("Loading Game....!");
+      rockButton.addEventListener("click", playRound);
+      paperButton.addEventListener("click", playRound);
+      scissorsButton.addEventListener("click", playRound);
+    </script>
+  </body>
 </html>
